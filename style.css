@@ -8,11 +8,18 @@
   --glass: rgba(255,255,255,0.04);
 }
 
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Arial;background:var(--bg);color:#e6eef3}
+html, body {
+  min-height: 100%;
+  margin: 0;
+  font-family: Inter, sans-serif;
+  overflow-y: auto; /* щоб була прокрутка */
+}
 
-.app{display:flex;min-height:100vh}
-.sidebar{width:220px;background:linear-gradient(180deg,#071029, #0b1220);padding:24px;display:flex;flex-direction:column;justify-content:space-between}
+.app {
+  display: flex;
+  min-height: 100vh;
+  overflow: auto; /* якщо контент виходить за межі */
+}
 .brand{font-weight:800;color:var(--accent);font-size:28px;letter-spacing:2px;margin-bottom:12px}
 .sidebar nav a{display:block;color:var(--muted);padding:10px 6px;border-radius:6px;text-decoration:none;margin:6px 0}
 .sidebar nav a.active, .sidebar nav a:hover{background:var(--glass);color:#fff}

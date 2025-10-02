@@ -1,85 +1,185 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ARIS Dashboard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aris Finance — Dashboard</title>
+
+  <!-- Стилі -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-    }
-    .sidebar {
-      width: 220px;
-      background: #1e293b;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      padding: 20px;
-    }
-    .sidebar h2 {
-      color: #38bdf8;
-    }
-    .sidebar button {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 10px;
-      background: #06b6d4;
-      border: none;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    .main {
-      margin-left: 240px;
-      padding: 20px;
-    }
-    .card {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    ul li {
-      margin: 5px 0;
-    }
-  </style>
 </head>
-<body>
-  <div class="sidebar">
-    <h2>ARIS</h2>
-    <button id="addIncome">+ Дохід</button>
-    <button id="addExpense">- Витрати</button>
+<body data-theme="dark">
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <!-- Якщо є logo.png в репозиторії, підключиться -->
+        <img src="logo.png" alt="logo" class="logo" onerror="this.style.display='none'">
+        <span class="brand-text">ARIS</span>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-btn active" data-view="dashboard">Дашборд</button>
+        <button class="nav-btn" data-view="transactions">Транзакції</button>
+        <button class="nav-btn" data-view="reports">Звіти</button>
+        <button class="nav-btn" data-view="settings">Налаштування</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <small>Приватний прототип</small>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="left">
+          <h1 class="title">Aris Finance</h1>
+          <div class="subtitle">Персональний фінансовий кабінет</div>
+        </div>
+
+        <div class="controls">
+          <button id="btn-add-income" class="btn success">+ Дохід</button>
+          <button id="btn-add-expense" class="btn danger">- Витрати</button>
+
+          <div class="theme-toggle">
+            <label class="switch">
+              <input id="theme-toggle-input" type="checkbox">
+              <span class="slider"></span>
+            </label>
+            <small id="theme-label">Тема</small>
+          </div>
+        </div>
+      </header>
+
+      <!-- Views -->
+      <section class="view" id="view-dashboard">
+
+        <div class="cards-row">
+          <div class="card big">
+            <div class="card-title">Загальний баланс</div>
+            <div id="total-balance" class="balance">0.00 UAH</div>
+            <div class="sub small" id="balances-breakdown"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Доходи (за місяць)</div>
+            <div id="month-income" class="metric">0.00</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Витрати (за місяць)</div>
+            <div id="month-expense" class="metric">0.00</div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <h3>Динаміка балансу</h3>
+            <canvas id="chart-line" height="160"></canvas>
+          </div>
+
+          <div class="panel">
+            <h3>Структура витрат / доходів</h3>
+            <canvas id="chart-pie" height="160"></canvas>
+          </div>
+        </div>
+
+        <div class="panel wide">
+          <h3>Останні транзакції</h3>
+          <table id="tx-table" class="table">
+            <thead>
+              <tr><th>Дата</th><th>Рахунок</th><th>Категорія</th><th>Опис</th><th>Сума</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- Transactions view (same table but with form) -->
+      <section class="view hidden" id="view-transactions">
+        <div class="panel">
+          <h3>Додати транзакцію</h3>
+          <form id="tx-form" class="form-inline">
+            <input type="date" id="tx-date" required>
+            <select id="tx-account">
+              <option>ПУМБ (UAH)</option>
+              <option>Bybit (UAH)</option>
+              <option>Рахунок кешбек</option>
+              <option>Готівка</option>
+            </select>
+            <input type="text" id="tx-category" placeholder="Категорія (наприклад Food, Salary)" required>
+            <input type="text" id="tx-desc" placeholder="Опис">
+            <input type="number" step="0.01" id="tx-amount" placeholder="Сума" required>
+            <button type="submit" class="btn primary">Зберегти</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h3>Усі транзакції</h3>
+          <table id="tx-table-2" class="table">
+            <thead>
+              <tr><th>Дата</th><th>Рахунок</th><th>Категорія</th><th>Опис</th><th>Сума</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Reports view -->
+      <section class="view hidden" id="view-reports">
+        <div class="panel">
+          <h3>Звіти</h3>
+          <p>Тут згодом будуть детальні звіти та експорти (CSV / Excel).</p>
+        </div>
+      </section>
+
+      <!-- Settings view -->
+      <section class="view hidden" id="view-settings">
+        <div class="panel">
+          <h3>Налаштування</h3>
+          <p>Тут можна буде додати інтеграції з біржами/банками (пізніше).</p>
+          <button id="btn-clear" class="btn warn">Очистити локальні дані</button>
+        </div>
+      </section>
+
+    </main>
   </div>
 
-  <div class="main">
-    <div class="card">
-      <h3>Баланс</h3>
-      <p>Загальний баланс: <span id="balance">$15,200</span></p>
-    </div>
+  <!-- Modal (simple) -->
+  <div id="modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-body">
+      <h3 id="modal-title">Додати транзакцію</h3>
+      <form id="modal-form" class="form-vertical">
+        <label>Дата <input type="date" id="m-date" required></label>
+        <label>Рахунок
+          <select id="m-account">
+            <option>ПУМБ (UAH)</option>
+            <option>Bybit (UAH)</option>
+            <option>Рахунок кешбек</option>
+            <option>Готівка</option>
+          </select>
+        </label>
+        <label>Категорія <input id="m-category" required></label>
+        <label>Опис <input id="m-desc"></label>
+        <label>Сума <input type="number" step="0.01" id="m-amount" required></label>
 
-    <div class="card">
-      <h3>Останні транзакції</h3>
-      <ul id="transactions"></ul>
-    </div>
-
-    <div class="card">
-      <h3>Графік доходів</h3>
-      <canvas id="incomeChart"></canvas>
+        <div class="modal-actions">
+          <button type="button" id="modal-cancel" class="btn">Скасувати</button>
+          <button type="submit" class="btn primary">Зберегти</button>
+        </div>
+      </form>
     </div>
   </div>
 
+  <!-- Скрипт -->
   <script src="script.js"></script>
 </body>
 </html>

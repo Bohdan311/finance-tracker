@@ -1,185 +1,77 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Aris Finance — Dashboard</title>
-
-  <!-- Стилі -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aris Finance</title>
   <link rel="stylesheet" href="style.css">
-
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body data-theme="dark">
-  <div class="app">
-
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="brand">
-        <!-- Якщо є logo.png в репозиторії, підключиться -->
-        <img src="logo.png" alt="logo" class="logo" onerror="this.style.display='none'">
-        <span class="brand-text">ARIS</span>
-      </div>
-
-      <nav class="nav">
-        <button class="nav-btn active" data-view="dashboard">Дашборд</button>
-        <button class="nav-btn" data-view="transactions">Транзакції</button>
-        <button class="nav-btn" data-view="reports">Звіти</button>
-        <button class="nav-btn" data-view="settings">Налаштування</button>
-      </nav>
-
-      <div class="sidebar-bottom">
-        <small>Приватний прототип</small>
-      </div>
-    </aside>
-
-    <!-- Main -->
-    <main class="main">
-
-      <!-- Topbar -->
-      <header class="topbar">
-        <div class="left">
-          <h1 class="title">Aris Finance</h1>
-          <div class="subtitle">Персональний фінансовий кабінет</div>
-        </div>
-
-        <div class="controls">
-          <button id="btn-add-income" class="btn success">+ Дохід</button>
-          <button id="btn-add-expense" class="btn danger">- Витрати</button>
-
-          <div class="theme-toggle">
-            <label class="switch">
-              <input id="theme-toggle-input" type="checkbox">
-              <span class="slider"></span>
-            </label>
-            <small id="theme-label">Тема</small>
-          </div>
-        </div>
-      </header>
-
-      <!-- Views -->
-      <section class="view" id="view-dashboard">
-
-        <div class="cards-row">
-          <div class="card big">
-            <div class="card-title">Загальний баланс</div>
-            <div id="total-balance" class="balance">0.00 UAH</div>
-            <div class="sub small" id="balances-breakdown"></div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">Доходи (за місяць)</div>
-            <div id="month-income" class="metric">0.00</div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">Витрати (за місяць)</div>
-            <div id="month-expense" class="metric">0.00</div>
-          </div>
-        </div>
-
-        <div class="grid">
-          <div class="panel">
-            <h3>Динаміка балансу</h3>
-            <canvas id="chart-line" height="160"></canvas>
-          </div>
-
-          <div class="panel">
-            <h3>Структура витрат / доходів</h3>
-            <canvas id="chart-pie" height="160"></canvas>
-          </div>
-        </div>
-
-        <div class="panel wide">
-          <h3>Останні транзакції</h3>
-          <table id="tx-table" class="table">
-            <thead>
-              <tr><th>Дата</th><th>Рахунок</th><th>Категорія</th><th>Опис</th><th>Сума</th><th></th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-
-      </section>
-
-      <!-- Transactions view (same table but with form) -->
-      <section class="view hidden" id="view-transactions">
-        <div class="panel">
-          <h3>Додати транзакцію</h3>
-          <form id="tx-form" class="form-inline">
-            <input type="date" id="tx-date" required>
-            <select id="tx-account">
-              <option>ПУМБ (UAH)</option>
-              <option>Bybit (UAH)</option>
-              <option>Рахунок кешбек</option>
-              <option>Готівка</option>
-            </select>
-            <input type="text" id="tx-category" placeholder="Категорія (наприклад Food, Salary)" required>
-            <input type="text" id="tx-desc" placeholder="Опис">
-            <input type="number" step="0.01" id="tx-amount" placeholder="Сума" required>
-            <button type="submit" class="btn primary">Зберегти</button>
-          </form>
-        </div>
-
-        <div class="panel">
-          <h3>Усі транзакції</h3>
-          <table id="tx-table-2" class="table">
-            <thead>
-              <tr><th>Дата</th><th>Рахунок</th><th>Категорія</th><th>Опис</th><th>Сума</th><th></th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Reports view -->
-      <section class="view hidden" id="view-reports">
-        <div class="panel">
-          <h3>Звіти</h3>
-          <p>Тут згодом будуть детальні звіти та експорти (CSV / Excel).</p>
-        </div>
-      </section>
-
-      <!-- Settings view -->
-      <section class="view hidden" id="view-settings">
-        <div class="panel">
-          <h3>Налаштування</h3>
-          <p>Тут можна буде додати інтеграції з біржами/банками (пізніше).</p>
-          <button id="btn-clear" class="btn warn">Очистити локальні дані</button>
-        </div>
-      </section>
-
-    </main>
+<body>
+  <!-- Екран входу -->
+  <div id="login-screen" class="screen active">
+    <h2>Вхід</h2>
+    <input type="text" id="login-username" placeholder="Логін">
+    <input type="password" id="login-password" placeholder="Пароль">
+    <button id="login-btn">Увійти</button>
+    <p id="login-error" class="error"></p>
   </div>
 
-  <!-- Modal (simple) -->
-  <div id="modal" class="modal hidden" aria-hidden="true">
-    <div class="modal-body">
-      <h3 id="modal-title">Додати транзакцію</h3>
-      <form id="modal-form" class="form-vertical">
-        <label>Дата <input type="date" id="m-date" required></label>
-        <label>Рахунок
-          <select id="m-account">
-            <option>ПУМБ (UAH)</option>
-            <option>Bybit (UAH)</option>
-            <option>Рахунок кешбек</option>
-            <option>Готівка</option>
-          </select>
-        </label>
-        <label>Категорія <input id="m-category" required></label>
-        <label>Опис <input id="m-desc"></label>
-        <label>Сума <input type="number" step="0.01" id="m-amount" required></label>
+  <!-- Основний кабінет -->
+  <div id="dashboard" class="screen">
+    <header>
+      <h1>Aris Finance</h1>
+      <button id="logout-btn">Вихід</button>
+      <label class="switch">
+        <input type="checkbox" id="theme-toggle">
+        <span class="slider"></span>
+      </label>
+    </header>
 
-        <div class="modal-actions">
-          <button type="button" id="modal-cancel" class="btn">Скасувати</button>
-          <button type="submit" class="btn primary">Зберегти</button>
-        </div>
-      </form>
-    </div>
+    <section class="controls">
+      <button id="add-income">+ Дохід</button>
+      <button id="add-expense">- Витрати</button>
+    </section>
+
+    <section id="accounts">
+      <h2>Рахунки</h2>
+      <ul id="accounts-list"></ul>
+    </section>
+
+    <section id="balance">
+      <h2>Загальний баланс</h2>
+      <p id="total-balance">0.00 UAH</p>
+    </section>
+
+    <section id="charts">
+      <div class="chart-box">
+        <h3>Динаміка балансу</h3>
+        <canvas id="balanceChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>Структура витрат / доходів</h3>
+        <canvas id="pieChart"></canvas>
+      </div>
+    </section>
+
+    <section id="transactions">
+      <h2>Останні транзакції</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Рахунок</th>
+            <th>Категорія</th>
+            <th>Опис</th>
+            <th>Сума</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="transactions-list"></tbody>
+      </table>
+    </section>
   </div>
 
-  <!-- Скрипт -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

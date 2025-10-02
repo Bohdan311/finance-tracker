@@ -1,93 +1,82 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="uk">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Aris Company — Finance Dashboard (Prototype)</title>
-<link rel="stylesheet" href="style.css">
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aris Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Підключення Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-  <img src="logo.PNG" alt="Aris Logo" width="120">
-  <span>ARIS</span>
-</div>
-      <nav>
-        <a class="active" href="#">Dashboard</a>
-        <a href="#" id="nav-transactions">Transactions</a>
-        <a href="#" id="nav-reports">Reports</a>
-        <a href="#" id="nav-settings">Settings</a>
-      </nav>
-      <div class="sidebar-bottom">Private prototype</div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <div class="search"><input id="search" placeholder="Search transactions..." /></div>
-        <div class="actions">
-          <button id="btn-add-income" class="btn btn-success">+ Income</button>
-          <button id="btn-add-expense" class="btn btn-danger">- Expense</button>
-        </div>
-      </header>
-
-      <section class="cards">
-        <div class="card balance">
-          <div class="card-title">Total balance</div>
-          <div id="total-balance" class="big">0.00 UAH</div>
-        </div>
-        <div class="card small">
-          <div class="card-title">Today</div>
-          <div id="today-change" class="big small-text">0.00</div>
-        </div>
-        <div class="card small">
-          <div class="card-title">This month</div>
-          <div id="month-sum" class="big small-text">0.00</div>
-        </div>
-      </section>
-
-      <section class="grid">
-        <div class="panel">
-          <h3>Income / Expense (monthly)</h3>
-          <canvas id="chart-line"></canvas>
-        </div>
-
-        <div class="panel">
-          <h3>Expenses by category</h3>
-          <canvas id="chart-pie"></canvas>
-        </div>
-
-        <div class="panel wide">
-          <h3>Recent transactions</h3>
-          <table id="tx-table">
-            <thead><tr><th>Date</th><th>Account</th><th>Category</th><th>Description</th><th>Amount</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- Modal (simple) -->
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <h2 id="modal-title">Add transaction</h2>
-      <form id="tx-form">
-        <label>Date<input type="date" id="tx-date" required></label>
-        <label>Account<select id="tx-account"><option>ПУМБ (UAH)</option><option>Bybit (UAH)</option><option>Raiffeisen кешбек</option><option>Готівка</option></select></label>
-        <label>Category<input id="tx-category" placeholder="Category (e.g., Food, Salary)" required></label>
-        <label>Description<input id="tx-desc" placeholder="Optional description"></label>
-        <label>Amount<input type="number" step="0.01" id="tx-amount" required></label>
-        <div class="modal-actions">
-          <button type="button" id="modal-cancel" class="btn">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-      </form>
+    
+    <!-- Ліве меню -->
+    <div class="sidebar">
+      <h2>Aris</h2>
+      <a href="#">Головна</a>
+      <a href="#">Фінанси</a>
+      <a href="#">Звіти</a>
+      <a href="#">Аналітика</a>
+      <a href="#">Налаштування</a>
     </div>
+    
+    <!-- Основна частина -->
+    <div class="main">
+      <div class="header">
+        Панель управління
+      </div>
+      
+      <div class="content">
+        <div class="card">
+          <h3>Баланс</h3>
+          <p>Загальний баланс: $15,200</p>
+        </div>
+
+        <div class="card">
+          <h3>Останні транзакції</h3>
+          <ul>
+            <li>+ $500 (Інвестиції)</li>
+            <li>- $120 (Витрати)</li>
+            <li>+ $300 (Дивіденди)</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Графік доходів</h3>
+          <canvas id="incomeChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
   </div>
 
-<script src="app.js"></script>
+  <!-- Скрипт для графіка -->
+  <script>
+    const ctx = document.getElementById('incomeChart').getContext('2d');
+    const incomeChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер'],
+        datasets: [{
+          label: 'Доходи ($)',
+          data: [1200, 1900, 3000, 2500, 3200, 4100],
+          borderColor: '#4e73df',
+          backgroundColor: 'rgba(78, 115, 223, 0.1)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>

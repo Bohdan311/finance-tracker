@@ -1,51 +1,52 @@
-// ===== Логін =====
+// Збережені дані
+let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+let isLoggedIn = localStorage.getItem("isLoggedIn") || false;
+
+// DOM
 const loginScreen = document.getElementById("login-screen");
 const dashboard = document.getElementById("dashboard");
 const loginBtn = document.getElementById("login-btn");
 const logoutBtn = document.getElementById("logout-btn");
-const loginError = document.getElementById("login-error");
+const incomeBtn = document.getElementById("income-btn");
+const expenseBtn = document.getElementById("expense-btn");
+const transactionsList = document.getElementById("transactions-list");
+const totalBalance = document.getElementById("total-balance");
+const themeToggle = document.getElementById("theme-toggle");
 
-let user = { username: "admin", password: "1234" };
-
+// Логін
 loginBtn.addEventListener("click", () => {
-  const u = document.getElementById("login-username").value;
-  const p = document.getElementById("login-password").value;
-
-  if (u === user.username && p === user.password) {
-    loginScreen.classList.remove("active");
-    dashboard.classList.add("active");
+  const user = document.getElementById("login-username").value;
+  const pass = document.getElementById("login-password").value;
+  if (user === "admin" && pass === "1234") {
+    localStorage.setItem("isLoggedIn", true);
+    loginScreen.classList.add("hidden");
+    dashboard.classList.remove("hidden");
+    render();
   } else {
-    loginError.textContent = "Невірний логін або пароль";
+    alert("Невірний логін або пароль!");
   }
 });
 
+// Логаут
 logoutBtn.addEventListener("click", () => {
-  dashboard.classList.remove("active");
-  loginScreen.classList.add("active");
+  localStorage.removeItem("isLoggedIn");
+  dashboard.classList.add("hidden");
+  loginScreen.classList.remove("hidden");
 });
 
-// ===== Дані =====
-let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-const accounts = ["ПУМБ (UAH)", "Bybit (UAH)", "MonoBank (UAH)"];
-
-// ===== Додавання транзакцій =====
-document.getElementById("add-income").addEventListener("click", () => addTransaction("Дохід"));
-document.getElementById("add-expense").addEventListener("click", () => addTransaction("Витрата"));
-
+// Додавання транзакцій
 function addTransaction(type) {
-  const account = prompt("Рахунок: " + accounts.join(", "));
-  const category = prompt("Категорія:");
-  const description = prompt("Опис:");
-  const amount = parseFloat(prompt("Сума:"));
-
-  if (!account || isNaN(amount)) return;
+  const amount = parseFloat(prompt("Введіть суму:"));
+  const desc = prompt("Опис:");
+  const account = prompt("Рахунок (ПУМБ / Bybit / Монобанк):");
+  if (isNaN(amount)) return;
 
   const transaction = {
     date: new Date().toISOString().split("T")[0],
     account,
-    category,
-    description,
-    amount: type === "Витрата" ? -amount : amount
+    category: type === "income" ? "Дохід" : "Витрати",
+    desc,
+    amount: type === "income" ? amount : -amount
   };
 
   transactions.push(transaction);
@@ -53,90 +54,64 @@ function addTransaction(type) {
   render();
 }
 
-// ===== Відображення =====
+incomeBtn.addEventListener("click", () => addTransaction("income"));
+expenseBtn.addEventListener("click", () => addTransaction("expense"));
+
+// Рендер таблиці і балансу
 function render() {
-  const list = document.getElementById("transactions-list");
-  list.innerHTML = "";
-  let total = 0;
-
-  const accountTotals = {};
-  accounts.forEach(a => accountTotals[a] = 0);
-
-  transactions.forEach((t, i) => {
-    total += t.amount;
-    accountTotals[t.account] += t.amount;
-
-    const row = document.createElement("tr");
-    row.innerHTML = `
+  let balance = 0;
+  transactionsList.innerHTML = "";
+  transactions.forEach(t => {
+    balance += t.amount;
+    const row = `<tr>
       <td>${t.date}</td>
       <td>${t.account}</td>
       <td>${t.category}</td>
-      <td>${t.description}</td>
-      <td style="color:${t.amount >= 0 ? 'green' : 'red'}">${t.amount.toFixed(2)}</td>
-      <td><button onclick="deleteTransaction(${i})">Видалити</button></td>
-    `;
-    list.appendChild(row);
+      <td>${t.desc}</td>
+      <td class="${t.amount >= 0 ? "positive" : "negative"}">${t.amount.toFixed(2)}</td>
+    </tr>`;
+    transactionsList.innerHTML += row;
   });
-
-  document.getElementById("total-balance").textContent = total.toFixed(2) + " UAH";
-
-  // рахунки
-  const accountsList = document.getElementById("accounts-list");
-  accountsList.innerHTML = "";
-  for (let acc in accountTotals) {
-    const li = document.createElement("li");
-    li.textContent = `${acc}: ${accountTotals[acc].toFixed(2)} UAH`;
-    accountsList.appendChild(li);
-  }
-
+  totalBalance.textContent = balance.toFixed(2) + " UAH";
   updateCharts();
 }
 
-function deleteTransaction(index) {
-  transactions.splice(index, 1);
-  localStorage.setItem("transactions", JSON.stringify(transactions));
-  render();
-}
-
-// ===== Графіки =====
-let balanceChart, pieChart;
-function updateCharts() {
-  const ctx1 = document.getElementById("balanceChart").getContext("2d");
-  const ctx2 = document.getElementById("pieChart").getContext("2d");
-
-  const labels = transactions.map(t => t.date);
-  const data = transactions.map(t => t.amount);
-
-  if (balanceChart) balanceChart.destroy();
-  balanceChart = new Chart(ctx1, {
-    type: "line",
-    data: { labels, datasets: [{ label: "Баланс", data, borderColor: "cyan" }] }
-  });
-
-  const categories = {};
-  transactions.forEach(t => {
-    if (!categories[t.category]) categories[t.category] = 0;
-    categories[t.category] += t.amount;
-  });
-
-  if (pieChart) pieChart.destroy();
-  pieChart = new Chart(ctx2, {
-    type: "doughnut",
-    data: {
-      labels: Object.keys(categories),
-      datasets: [{ data: Object.values(categories), backgroundColor: ["blue", "orange", "green", "red", "purple"] }]
-    }
-  });
-}
-
-// ===== Темна/світла =====
-document.getElementById("theme-toggle").addEventListener("change", e => {
-  if (e.target.checked) {
-    document.body.classList.remove("light");
-  } else {
-    document.body.classList.add("light");
-  }
+// Графіки
+let balanceChart = new Chart(document.getElementById("balanceChart"), {
+  type: "line",
+  data: { labels: [], datasets: [{ label: "Баланс", data: [], borderColor: "#007bff" }] },
 });
 
-// ===== Старт =====
-render();
+let categoryChart = new Chart(document.getElementById("categoryChart"), {
+  type: "doughnut",
+  data: { labels: [], datasets: [{ data: [], backgroundColor: ["#28a745", "#dc3545", "#ffc107"] }] },
+});
+
+function updateCharts() {
+  balanceChart.data.labels = transactions.map(t => t.date);
+  balanceChart.data.datasets[0].data = transactions.map((_, i) =>
+    transactions.slice(0, i + 1).reduce((sum, t) => sum + t.amount, 0)
+  );
+  balanceChart.update();
+
+  let categories = {};
+  transactions.forEach(t => {
+    categories[t.category] = (categories[t.category] || 0) + Math.abs(t.amount);
+  });
+
+  categoryChart.data.labels = Object.keys(categories);
+  categoryChart.data.datasets[0].data = Object.values(categories);
+  categoryChart.update();
+}
+
+// Тема
+themeToggle.addEventListener("change", () => {
+  document.body.classList.toggle("light");
+});
+
+// Авто-логін
+if (isLoggedIn) {
+  loginScreen.classList.add("hidden");
+  dashboard.classList.remove("hidden");
+  render();
+}

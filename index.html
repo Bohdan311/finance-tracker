@@ -1,54 +1,52 @@
-<canvas id="incomeChart"></canvas>
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <title>Aris Company — Finance Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js підключення -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <span>ARIS</span>
+      </div>
+      <nav>
+        <a class="active" href="#">Dashboard</a>
+        <a href="#">Transactions</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+      </nav>
+    </aside>
 
-<script>
-  const ctx = document.getElementById('incomeChart').getContext('2d');
+    <main class="main">
+      <header class="topbar">
+        <h2>Панель управління</h2>
+      </header>
 
-  // Створюємо градієнт для лінії
-  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, 'rgba(78,115,223,0.6)');
-  gradient.addColorStop(1, 'rgba(78,115,223,0)');
+      <section class="cards">
+        <div class="card">
+          <h3>Баланс</h3>
+          <p>Загальний баланс: <b>$15,200</b></p>
+        </div>
+        <div class="card">
+          <h3>Останні транзакції</h3>
+          <ul>
+            <li>+ $500 (Інвестиції)</li>
+            <li>- $120 (Витрати)</li>
+            <li>+ $300 (Дивіденди)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Графік доходів</h3>
+          <canvas id="incomeChart"></canvas>
+        </div>
+      </section>
+    </main>
+  </div>
 
-  const incomeChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер'],
-      datasets: [{
-        label: 'Доходи',
-        data: [1200, 1900, 3000, 2500, 3200, 4100],
-        borderColor: '#4e73df',
-        backgroundColor: gradient,
-        fill: true,
-        tension: 0.4,
-        borderWidth: 3,
-        pointBackgroundColor: '#fff',
-        pointBorderColor: '#4e73df',
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        pointHoverBackgroundColor: '#4e73df',
-        pointHoverBorderColor: '#fff'
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          display: true,
-          labels: {
-            color: '#fff',
-            font: { size: 14 }
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: '#aaa' },
-          grid: { display: false }
-        },
-        y: {
-          ticks: { color: '#aaa' },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        }
-      }
-    }
-  });
-</script>
+  <script src="script.js"></script>
+</body>
+</html>

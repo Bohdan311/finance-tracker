@@ -1,35 +1,44 @@
 <!doctype html>
 <html lang="uk">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aris Company — Finance Dashboard</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Chart.js підключення -->
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
+        <img src="logo.PNG" alt="Aris Logo" width="32" />
         <span>ARIS</span>
       </div>
       <nav>
         <a class="active" href="#">Dashboard</a>
-        <a href="#">Transactions</a>
-        <a href="#">Reports</a>
-        <a href="#">Settings</a>
+        <a href="#" id="nav-transactions">Transactions</a>
+        <a href="#" id="nav-reports">Reports</a>
+        <a href="#" id="nav-settings">Settings</a>
       </nav>
+      <div class="sidebar-bottom">Private prototype</div>
     </aside>
 
     <main class="main">
       <header class="topbar">
-        <h2>Панель управління</h2>
+        <div class="search">
+          <input id="search" type="text" placeholder="Search..." />
+        </div>
+        <div class="actions">
+          <button id="btn-add-income" class="btn btn-primary">+ Дохід</button>
+          <button id="btn-add-expense" class="btn btn-danger">- Витрати</button>
+        </div>
       </header>
 
       <section class="cards">
         <div class="card">
           <h3>Баланс</h3>
-          <p>Загальний баланс: <b>$15,200</b></p>
+          <p>Загальний баланс: $15,200</p>
         </div>
         <div class="card">
           <h3>Останні транзакції</h3>
@@ -41,12 +50,44 @@
         </div>
         <div class="card">
           <h3>Графік доходів</h3>
-          <canvas id="incomeChart"></canvas>
+          <canvas id="incomeChart" width="400" height="200"></canvas>
         </div>
       </section>
     </main>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Код для графіка -->
+  <script>
+  const ctx = document.getElementById("incomeChart").getContext("2d");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: ["Січ", "Лют", "Бер", "Кві", "Тра", "Чер"],
+      datasets: [{
+        label: "Доходи ($)",
+        data: [1200, 1900, 3000, 2500, 3100, 4000],
+        borderColor: "#2dd4bf",
+        backgroundColor: "rgba(45, 212, 191, 0.2)",
+        fill: true,
+        tension: 0.4,
+        pointRadius: 5,
+        pointBackgroundColor: "#2dd4bf"
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: { color: "#e5e7eb" }
+        }
+      },
+      scales: {
+        x: { ticks: { color: "#e5e7eb" } },
+        y: { ticks: { color: "#e5e7eb" } }
+      }
+    }
+  });
+  </script>
 </body>
 </html>

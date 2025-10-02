@@ -5,56 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aris Finance</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <!-- Екран входу -->
-  <div id="login-screen" class="screen active">
-    <h2>Вхід</h2>
+  <div id="login-screen" class="login-container">
+    <h1>Aris Finance</h1>
+    <p>Персональний фінансовий кабінет</p>
     <input type="text" id="login-username" placeholder="Логін">
     <input type="password" id="login-password" placeholder="Пароль">
     <button id="login-btn">Увійти</button>
-    <p id="login-error" class="error"></p>
   </div>
 
-  <!-- Основний кабінет -->
-  <div id="dashboard" class="screen">
+  <!-- Основна панель -->
+  <div id="dashboard" class="hidden">
     <header>
-      <h1>Aris Finance</h1>
-      <button id="logout-btn">Вихід</button>
-      <label class="switch">
-        <input type="checkbox" id="theme-toggle">
-        <span class="slider"></span>
-      </label>
+      <h2>Aris Finance</h2>
+      <div class="header-controls">
+        <button id="income-btn" class="btn green">+ Дохід</button>
+        <button id="expense-btn" class="btn red">- Витрати</button>
+        <label class="switch">
+          <input type="checkbox" id="theme-toggle">
+          <span class="slider"></span> Тема
+        </label>
+        <button id="logout-btn" class="btn gray">Вийти</button>
+      </div>
     </header>
 
-    <section class="controls">
-      <button id="add-income">+ Дохід</button>
-      <button id="add-expense">- Витрати</button>
+    <!-- Баланс і рахунки -->
+    <section class="cards">
+      <div class="card big">
+        <h3>Загальний баланс</h3>
+        <p id="total-balance">0.00 UAH</p>
+      </div>
+      <div class="card">
+        <h4>Рахунки</h4>
+        <ul id="accounts-list">
+          <li>ПУМБ — <span>0.00 UAH</span></li>
+          <li>Bybit — <span>0.00 USDT</span></li>
+          <li>Монобанк — <span>0.00 UAH</span></li>
+        </ul>
+      </div>
     </section>
 
-    <section id="accounts">
-      <h2>Рахунки</h2>
-      <ul id="accounts-list"></ul>
-    </section>
-
-    <section id="balance">
-      <h2>Загальний баланс</h2>
-      <p id="total-balance">0.00 UAH</p>
-    </section>
-
-    <section id="charts">
-      <div class="chart-box">
-        <h3>Динаміка балансу</h3>
+    <!-- Графіки -->
+    <section class="charts">
+      <div class="card">
+        <h4>Динаміка балансу</h4>
         <canvas id="balanceChart"></canvas>
       </div>
-      <div class="chart-box">
-        <h3>Структура витрат / доходів</h3>
-        <canvas id="pieChart"></canvas>
+      <div class="card">
+        <h4>Структура витрат / доходів</h4>
+        <canvas id="categoryChart"></canvas>
       </div>
     </section>
 
-    <section id="transactions">
-      <h2>Останні транзакції</h2>
+    <!-- Останні транзакції -->
+    <section class="card">
+      <h4>Останні транзакції</h4>
       <table>
         <thead>
           <tr>
@@ -63,7 +71,6 @@
             <th>Категорія</th>
             <th>Опис</th>
             <th>Сума</th>
-            <th></th>
           </tr>
         </thead>
         <tbody id="transactions-list"></tbody>
@@ -71,7 +78,6 @@
     </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

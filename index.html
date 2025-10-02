@@ -1,93 +1,85 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aris Company — Finance Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Chart.js CDN -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARIS Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .sidebar {
+      width: 220px;
+      background: #1e293b;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding: 20px;
+    }
+    .sidebar h2 {
+      color: #38bdf8;
+    }
+    .sidebar button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      background: #06b6d4;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .main {
+      margin-left: 240px;
+      padding: 20px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    ul li {
+      margin: 5px 0;
+    }
+  </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <img src="logo.PNG" alt="Aris Logo" width="32" />
-        <span>ARIS</span>
-      </div>
-      <nav>
-        <a class="active" href="#">Dashboard</a>
-        <a href="#" id="nav-transactions">Transactions</a>
-        <a href="#" id="nav-reports">Reports</a>
-        <a href="#" id="nav-settings">Settings</a>
-      </nav>
-      <div class="sidebar-bottom">Private prototype</div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <div class="search">
-          <input id="search" type="text" placeholder="Search..." />
-        </div>
-        <div class="actions">
-          <button id="btn-add-income" class="btn btn-primary">+ Дохід</button>
-          <button id="btn-add-expense" class="btn btn-danger">- Витрати</button>
-        </div>
-      </header>
-
-      <section class="cards">
-        <div class="card">
-          <h3>Баланс</h3>
-          <p>Загальний баланс: $15,200</p>
-        </div>
-        <div class="card">
-          <h3>Останні транзакції</h3>
-          <ul>
-            <li>+ $500 (Інвестиції)</li>
-            <li>- $120 (Витрати)</li>
-            <li>+ $300 (Дивіденди)</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Графік доходів</h3>
-          <canvas id="incomeChart" width="400" height="200"></canvas>
-        </div>
-      </section>
-    </main>
+  <div class="sidebar">
+    <h2>ARIS</h2>
+    <button id="addIncome">+ Дохід</button>
+    <button id="addExpense">- Витрати</button>
   </div>
 
-  <!-- Код для графіка -->
-  <script>
-  const ctx = document.getElementById("incomeChart").getContext("2d");
+  <div class="main">
+    <div class="card">
+      <h3>Баланс</h3>
+      <p>Загальний баланс: <span id="balance">$15,200</span></p>
+    </div>
 
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: ["Січ", "Лют", "Бер", "Кві", "Тра", "Чер"],
-      datasets: [{
-        label: "Доходи ($)",
-        data: [1200, 1900, 3000, 2500, 3100, 4000],
-        borderColor: "#2dd4bf",
-        backgroundColor: "rgba(45, 212, 191, 0.2)",
-        fill: true,
-        tension: 0.4,
-        pointRadius: 5,
-        pointBackgroundColor: "#2dd4bf"
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          labels: { color: "#e5e7eb" }
-        }
-      },
-      scales: {
-        x: { ticks: { color: "#e5e7eb" } },
-        y: { ticks: { color: "#e5e7eb" } }
-      }
-    }
-  });
-  </script>
+    <div class="card">
+      <h3>Останні транзакції</h3>
+      <ul id="transactions"></ul>
+    </div>
+
+    <div class="card">
+      <h3>Графік доходів</h3>
+      <canvas id="incomeChart"></canvas>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

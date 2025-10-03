@@ -1,46 +1,191 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TSAREVSKY CAPITAL PARTNERS</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TSAREVSKY CAPITAL PARTNERS — TCP | Finance</title>
+  <meta name="description" content="TCP personal finance dashboard" />
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <!-- Хедер з логотипом і назвою -->
-    <header class="header">
-        <img src="logo.png" alt="TSAREVSKY CAPITAL PARTNERS Logo" class="logo">
-        <h1 class="company-name">TSAREVSKY CAPITAL PARTNERS</h1>
-    </header>
+  <div id="app" class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo-wrap">
+          <img src="logo.png" alt="TCP logo" onerror="this.style.display='none'">
+        </div>
+        <div class="brand-text">
+          <div class="brand-full">TSAREVSKY CAPITAL PARTNERS</div>
+          <div class="brand-short">TCP</div>
+        </div>
+      </div>
 
-    <!-- Головний контент -->
-    <main>
-        <section class="intro">
-            <h2>Вітаємо у TSAREVSKY CAPITAL PARTNERS</h2>
-            <p>
-                Ми пропонуємо сучасні фінансові інструменти для відстеження витрат, 
-                управління бюджетом та планування інвестицій.
-            </p>
-        </section>
+      <nav class="nav">
+        <button class="nav-btn active" data-view="dashboard">Дашборд</button>
+        <button class="nav-btn" data-view="transactions">Транзакції</button>
+        <button class="nav-btn" data-view="accounts">Рахунки</button>
+        <button class="nav-btn" data-view="settings">Налаштування</button>
+      </nav>
 
-        <section class="features">
-            <h2>Наші можливості</h2>
-            <ul>
-                <li>Ведення персональних фінансів</li>
-                <li>Аналіз витрат та доходів</li>
-                <li>Візуалізація фінансових даних</li>
-                <li>Інтуїтивний та зручний інтерфейс</li>
-            </ul>
-        </section>
+      <div class="sidebar-bottom">
+        <small>Private prototype — TCP</small>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <header class="topbar">
+        <div class="top-left">
+          <h1 class="site-title">TCP Finance</h1>
+          <div class="site-sub">Персональний облік коштів</div>
+        </div>
+
+        <div class="top-controls">
+          <input id="search" class="search" placeholder="Пошук транзакцій..." />
+          <button id="btn-add-income" class="btn success">+ Дохід</button>
+          <button id="btn-add-expense" class="btn danger">- Витрати</button>
+
+          <label class="theme-switch" title="Тема">
+            <input id="theme-toggle" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+
+          <button id="btn-logout" class="btn ghost">Вийти</button>
+        </div>
+      </header>
+
+      <!-- VIEWS -->
+      <section id="view-dashboard" class="view active">
+        <div class="cards-row">
+          <div class="card big">
+            <div class="card-title">Загальний баланс</div>
+            <div id="total-balance" class="big-value">0.00 UAH</div>
+            <div id="breakdown" class="small-muted"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Доходи (місяць)</div>
+            <div id="month-income" class="metric">0.00</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Витрати (місяць)</div>
+            <div id="month-expense" class="metric">0.00</div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="panel">
+            <h3>Динаміка балансу</h3>
+            <canvas id="chart-line" height="160"></canvas>
+          </div>
+
+          <div class="panel">
+            <h3>Структура категорій</h3>
+            <canvas id="chart-pie" height="160"></canvas>
+          </div>
+        </div>
+
+        <div class="panel wide">
+          <h3>Останні транзакції</h3>
+          <table id="tx-table" class="tx-table">
+            <thead>
+              <tr><th>Дата</th><th>Рахунок</th><th>Категорія</th><th>Опис</th><th>Сума</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="view-transactions" class="view hidden">
+        <div class="panel">
+          <h3>Додати транзакцію</h3>
+          <form id="tx-form" class="form-inline">
+            <input type="date" id="tx-date" required>
+            <select id="tx-account"></select>
+            <input id="tx-category" placeholder="Категорія" required>
+            <input id="tx-desc" placeholder="Опис">
+            <input id="tx-amount" type="number" step="0.01" placeholder="Сума" required>
+            <button class="btn primary" type="submit">Додати</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h3>Всі транзакції</h3>
+          <table id="tx-table-2" class="tx-table">
+            <thead>
+              <tr><th>Дата</th><th>Рахунок</th><th>Категорія</th><th>Опис</th><th>Сума</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="view-accounts" class="view hidden">
+        <div class="panel">
+          <h3>Рахунки</h3>
+          <div class="accounts-controls">
+            <input id="new-account-name" placeholder="Нова назва рахунку">
+            <button id="btn-add-account" class="btn">Додати рахунок</button>
+            <label class="file-label">Імпорт CSV<input id="import-csv" type="file" accept=".csv"></label>
+          </div>
+          <ul id="accounts-list" class="accounts-list"></ul>
+        </div>
+      </section>
+
+      <section id="view-settings" class="view hidden">
+        <div class="panel">
+          <h3>Налаштування</h3>
+          <button id="btn-clear" class="btn warn">Очистити локальні дані</button>
+          <p class="small-muted">План: інтеграції з біржами / обробка CSV / експорт CSV</p>
+        </div>
+      </section>
+
     </main>
+  </div>
 
-    <!-- Футер -->
-    <footer class="footer">
-        <p>© 2025 TSAREVSKY CAPITAL PARTNERS. Усі права захищені.</p>
-    </footer>
+  <!-- MODAL -->
+  <div id="modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <h3 id="modal-title">Додати транзакцію</h3>
+      <form id="modal-form" class="form-vertical">
+        <label>Дата<input id="m-date" type="date" required></label>
+        <label>Рахунок
+          <select id="m-account"></select>
+        </label>
+        <label>Категорія<input id="m-category" required></label>
+        <label>Опис<input id="m-desc"></label>
+        <label>Сума<input id="m-amount" type="number" step="0.01" required></label>
+        <div class="modal-actions">
+          <button type="button" id="modal-cancel" class="btn">Скасувати</button>
+          <button type="submit" class="btn primary">Зберегти</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-    <!-- Скрипти -->
-    <script src="script.js"></script>
-    <script src="app.js"></script>
+  <!-- AUTH / SETUP OVERLAY (first-run & login) -->
+  <div id="auth-overlay" class="overlay">
+    <div class="auth-box">
+      <h2>Вхід — TCP</h2>
+      <div id="auth-setup" class="auth-section">
+        <p>Перший запуск — створіть пароль (запам'ятається тільки у вашому браузері).</p>
+        <input id="setup-pass" type="password" placeholder="Новий пароль">
+        <button id="setup-save" class="btn primary">Створити пароль</button>
+      </div>
+
+      <div id="auth-login" class="auth-section hidden">
+        <p>Введіть пароль для входу</p>
+        <input id="login-pass" type="password" placeholder="Пароль">
+        <button id="login-do" class="btn primary">Увійти</button>
+        <p id="auth-error" class="auth-error"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

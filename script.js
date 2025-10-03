@@ -1,126 +1,74 @@
-// --- Логін ---
-function login() {
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
-
-  if (user === "admin" && pass === "1234") {
-    document.getElementById("login-page").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
-    loadAccounts();
-    loadTransactions();
-    updateChart();
-  } else {
-    document.getElementById("login-error").innerText = "❌ Невірний логін або пароль!";
-  }
-}
-
-function logout() {
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("login-page").style.display = "block";
-}
-
-// --- Рахунки ---
+let password = "1234"; // тимчасовий пароль
 let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
 let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
 
-function loadAccounts() {
-  const list = document.getElementById("accounts-list");
-  list.innerHTML = "";
-  accounts.forEach((acc, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${acc.name} — ${acc.balance} ${acc.currency}</span>
-      <button onclick="deleteAccount(${index})">🗑</button>
-    `;
-    list.appendChild(li);
-  });
-  saveAccounts();
+function login() {
+  let input = document.getElementById("password").value;
+  if (input === password) {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    renderAccounts();
+    renderTransactions();
+    renderChart();
+  } else {
+    alert("Невірний пароль");
+  }
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark");
 }
 
 function addAccount() {
-  const name = prompt("Назва рахунку:");
-  const balance = parseFloat(prompt("Початковий баланс:")) || 0;
-  const currency = prompt("Валюта (USD, UAH, EUR):") || "USD";
-
-  if (name) {
-    accounts.push({ name, balance, currency });
-    loadAccounts();
-  }
-}
-
-function deleteAccount(index) {
-  accounts.splice(index, 1);
-  loadAccounts();
-}
-
-function saveAccounts() {
+  let name = prompt("Назва рахунку:");
+  let balance = parseFloat(prompt("Баланс:")) || 0;
+  accounts.push({ name, balance });
   localStorage.setItem("accounts", JSON.stringify(accounts));
+  renderAccounts();
 }
 
-// --- Операції ---
-function loadTransactions() {
-  const list = document.getElementById("transactions-list");
-  list.innerHTML = "";
-  transactions.forEach((tr, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${tr.type} | ${tr.account} | ${tr.amount} ${tr.currency} | ${tr.category}</span>
-      <button onclick="deleteTransaction(${index})">🗑</button>
-    `;
-    list.appendChild(li);
+function renderAccounts() {
+  let container = document.getElementById("account-list");
+  container.innerHTML = "";
+  accounts.forEach(a => {
+    let div = document.createElement("div");
+    div.className = "account-card";
+    div.innerHTML = `<h3>${a.name}</h3><p>${a.balance} ₴</p>`;
+    container.appendChild(div);
   });
-  saveTransactions();
 }
 
 function addTransaction() {
-  if (accounts.length === 0) {
-    alert("Спочатку додайте рахунок!");
-    return;
-  }
-
-  const type = prompt("Тип (Дохід / Витрата):", "Дохід");
-  const accountIndex = parseInt(prompt("Оберіть рахунок (0-" + (accounts.length - 1) + "):")) || 0;
-  const amount = parseFloat(prompt("Сума:")) || 0;
-  const category = prompt("Категорія:", "Зарплата");
-  const currency = accounts[accountIndex].currency;
-
-  if (type.toLowerCase() === "дохід") {
-    accounts[accountIndex].balance += amount;
-  } else {
-    accounts[accountIndex].balance -= amount;
-  }
-
-  transactions.push({ type, account: accounts[accountIndex].name, amount, currency, category });
-  loadAccounts();
-  loadTransactions();
-  updateChart();
-}
-
-function deleteTransaction(index) {
-  transactions.splice(index, 1);
-  loadTransactions();
-}
-
-function saveTransactions() {
+  let acc = prompt("Назва рахунку:");
+  let amount = parseFloat(prompt("Сума (мінус = витрата):"));
+  transactions.push({ acc, amount, date: new Date().toLocaleDateString() });
   localStorage.setItem("transactions", JSON.stringify(transactions));
+  renderTransactions();
+  renderChart();
 }
 
-// --- Графік ---
-function updateChart() {
-  const income = transactions.filter(t => t.type.toLowerCase() === "дохід")
-    .reduce((sum, t) => sum + t.amount, 0);
+function renderTransactions() {
+  let list = document.getElementById("transaction-list");
+  list.innerHTML = "";
+  transactions.forEach(t => {
+    let li = document.createElement("li");
+    li.textContent = `${t.date}: ${t.acc} → ${t.amount} ₴`;
+    list.appendChild(li);
+  });
+}
 
-  const expense = transactions.filter(t => t.type.toLowerCase() === "витрата")
-    .reduce((sum, t) => sum + t.amount, 0);
+function renderChart() {
+  let ctx = document.getElementById("chart").getContext("2d");
+  let income = transactions.filter(t => t.amount > 0).reduce((a,b)=>a+b.amount,0);
+  let expense = transactions.filter(t => t.amount < 0).reduce((a,b)=>a+b.amount,0);
 
-  const ctx = document.getElementById("statsChart").getContext("2d");
   new Chart(ctx, {
-    type: 'doughnut',
+    type: "pie",
     data: {
-      labels: ['Дохід', 'Витрати'],
+      labels: ["Дохід", "Витрати"],
       datasets: [{
-        data: [income, expense],
-        backgroundColor: ['#28a745', '#dc3545']
+        data: [income, Math.abs(expense)],
+        backgroundColor: ["green", "red"]
       }]
     }
   });

@@ -1,83 +1,46 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aris Finance</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSAREVSKY CAPITAL PARTNERS</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Екран входу -->
-  <div id="login-screen" class="login-container">
-    <h1>Aris Finance</h1>
-    <p>Персональний фінансовий кабінет</p>
-    <input type="text" id="login-username" placeholder="Логін">
-    <input type="password" id="login-password" placeholder="Пароль">
-    <button id="login-btn">Увійти</button>
-  </div>
-
-  <!-- Основна панель -->
-  <div id="dashboard" class="hidden">
-    <header>
-      <h2>Aris Finance</h2>
-      <div class="header-controls">
-        <button id="income-btn" class="btn green">+ Дохід</button>
-        <button id="expense-btn" class="btn red">- Витрати</button>
-        <label class="switch">
-          <input type="checkbox" id="theme-toggle">
-          <span class="slider"></span>
-        </label>
-        <button id="logout-btn" class="btn gray">Вийти</button>
-      </div>
+    <!-- Хедер з логотипом і назвою -->
+    <header class="header">
+        <img src="logo.png" alt="TSAREVSKY CAPITAL PARTNERS Logo" class="logo">
+        <h1 class="company-name">TSAREVSKY CAPITAL PARTNERS</h1>
     </header>
 
-    <!-- Баланс і рахунки -->
-    <section class="cards">
-      <div class="card big">
-        <h3>Загальний баланс</h3>
-        <p id="total-balance">0.00 UAH</p>
-      </div>
-      <div class="card">
-        <h4>Рахунки</h4>
-        <ul id="accounts-list">
-          <li>ПУМБ — <span>0.00 UAH</span></li>
-          <li>Bybit — <span>0.00 USDT</span></li>
-          <li>Монобанк — <span>0.00 UAH</span></li>
-        </ul>
-      </div>
-    </section>
+    <!-- Головний контент -->
+    <main>
+        <section class="intro">
+            <h2>Вітаємо у TSAREVSKY CAPITAL PARTNERS</h2>
+            <p>
+                Ми пропонуємо сучасні фінансові інструменти для відстеження витрат, 
+                управління бюджетом та планування інвестицій.
+            </p>
+        </section>
 
-    <!-- Графіки -->
-    <section class="charts">
-      <div class="card">
-        <h4>Динаміка балансу</h4>
-        <canvas id="balanceChart"></canvas>
-      </div>
-      <div class="card">
-        <h4>Структура витрат / доходів</h4>
-        <canvas id="categoryChart"></canvas>
-      </div>
-    </section>
+        <section class="features">
+            <h2>Наші можливості</h2>
+            <ul>
+                <li>Ведення персональних фінансів</li>
+                <li>Аналіз витрат та доходів</li>
+                <li>Візуалізація фінансових даних</li>
+                <li>Інтуїтивний та зручний інтерфейс</li>
+            </ul>
+        </section>
+    </main>
 
-    <!-- Останні транзакції -->
-    <section class="card">
-      <h4>Останні транзакції</h4>
-      <table>
-        <thead>
-          <tr>
-            <th>Дата</th>
-            <th>Рахунок</th>
-            <th>Категорія</th>
-            <th>Опис</th>
-            <th>Сума</th>
-          </tr>
-        </thead>
-        <tbody id="transactions-list"></tbody>
-      </table>
-    </section>
-  </div>
+    <!-- Футер -->
+    <footer class="footer">
+        <p>© 2025 TSAREVSKY CAPITAL PARTNERS. Усі права захищені.</p>
+    </footer>
 
-  <script src="script.js"></script>
+    <!-- Скрипти -->
+    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

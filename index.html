@@ -3,45 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TCP Finance</title>
+  <title>TCP Money Manager</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Вхід -->
-  <div id="login-page">
-    <h2>Вхід у TCP Finance</h2>
-    <input type="text" id="username" placeholder="Логін">
-    <input type="password" id="password" placeholder="Пароль">
+  <!-- Екран логіну -->
+  <div id="login-screen">
+    <h2>TSAREVSKY CAPITAL PARTNERS</h2>
+    <input type="password" id="password" placeholder="Введіть пароль">
     <button onclick="login()">Увійти</button>
-    <p id="login-error"></p>
   </div>
 
-  <!-- Кабінет -->
-  <div id="dashboard" style="display:none;">
+  <!-- Основний дашборд -->
+  <div id="app" style="display:none;">
     <header>
-      <h1>TSAREVSKY CAPITAL PARTNERS (TCP)</h1>
-      <button onclick="logout()">Вийти</button>
+      <h1>TCP Dashboard</h1>
+      <button onclick="toggleTheme()">🌙/☀️</button>
     </header>
 
-    <!-- Рахунки -->
-    <section>
-      <h2>💰 Рахунки</h2>
-      <ul id="accounts-list"></ul>
-      <button onclick="addAccount()">➕ Додати рахунок</button>
+    <section id="accounts">
+      <h2>Рахунки</h2>
+      <div id="account-list"></div>
+      <button onclick="addAccount()">+ Додати рахунок</button>
     </section>
 
-    <!-- Операції -->
-    <section>
-      <h2>📊 Операції</h2>
-      <ul id="transactions-list"></ul>
-      <button onclick="addTransaction()">➕ Додати операцію</button>
+    <section id="transactions">
+      <h2>Транзакції</h2>
+      <ul id="transaction-list"></ul>
+      <button onclick="addTransaction()">+ Додати транзакцію</button>
     </section>
 
-    <!-- Графік -->
-    <section>
-      <h2>📈 Статистика</h2>
-      <canvas id="statsChart"></canvas>
+    <section id="stats">
+      <h2>Статистика</h2>
+      <canvas id="chart" width="300" height="300"></canvas>
     </section>
   </div>
 
